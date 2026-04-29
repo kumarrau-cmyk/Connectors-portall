@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connectors Portal – Orange Health Labs</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #F5A623;
+    --orange-dark: #e0911a;
+    --orange-light: #FFF4E0;
+    --teal: #2BA57A;
+    --teal-light: #E6F7F1;
+    --bg: #F8F9FB;
+    --white: #ffffff;
+    --text: #1a1a2e;
+    --muted: #7a8499;
+    --border: #e8ecf0;
+    --danger: #e53e3e;
+    --danger-light: #fff5f5;
+    --shadow: 0 2px 16px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; }
+
+  .header {
+    background:var(--white); border-bottom:1px solid var(--border);
+    padding:0 32px; display:flex; align-items:center; justify-content:space-between;
+    height:68px; position:sticky; top:0; z-index:50;
+    box-shadow:0 1px 8px rgba(0,0,0,0.06);
+  }
+  .logo-wrap { display:flex; align-items:center; gap:14px; }
+  .logo-svg { height:46px; width:auto; }
+  .logo-divider { width:1px; height:28px; background:var(--border); }
+  .portal-label { font-family:'Nunito',sans-serif; font-size:15px; font-weight:700; color:var(--text); }
+  .portal-sub { font-size:11px; color:var(--muted); margin-top:1px; }
+  .cycle-badge {
+    display:inline-flex; align-items:center; gap:6px;
+    background:var(--teal-light); border:1px solid rgba(43,165,122,0.3);
+    border-radius:8px; padding:6px 14px;
+    font-size:12px; font-weight:700; color:var(--teal);
+  }
+  .dot { width:7px; height:7px; border-radius:50%; background:var(--teal); display:inline-block; }
+
+  .hero {
+    background:linear-gradient(135deg,var(--orange) 0%,#f0881a 100%);
+    padding:48px 32px 56px; text-align:center; position:relative; overflow:hidden;
+  }
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/svg%3E");
+    pointer-events:none;
+  }
+  .hero-tag {
+    display:inline-block; background:rgba(255,255,255,0.2); color:#fff;
+    font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+    border-radius:99px; padding:4px 14px; margin-bottom:14px;
+  }
+  .hero h1 { font-family:'Nunito',sans-serif; font-size:clamp(26px,5vw,40px); font-weight:800; color:#fff; line-height:1.15; margin-bottom:8px; }
+  .hero p { color:rgba(255,255,255,0.85); font-size:15px; }
+
+  .page-body { padding:0 16px 80px; display:flex; flex-direction:column; align-items:center; }
+  .search-card {
+    background:var(--white); border-radius:20px; padding:32px 36px;
+    width:100%; max-width:560px; box-shadow:var(--shadow-lg);
+    margin-top:-28px; position:relative; z-index:10; margin-bottom:28px;
+  }
+  .search-label { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; display:block; }
+  .input-row { display:flex; gap:10px; }
+  input[type=text] {
+    flex:1; background:#f5f7fa; border:1.5px solid var(--border); border-radius:12px;
+    padding:13px 18px; font-size:20px; font-family:'Nunito',sans-serif; font-weight:700;
+    letter-spacing:2px; color:var(--text); outline:none; transition:border-color .2s;
+  }
+  input[type=text]:focus { border-color:var(--orange); background:#fff; }
+  input[type=text]::placeholder { color:#c5cad5; font-weight:600; letter-spacing:1px; font-size:16px; }
+  .check-btn {
+    background:var(--orange); color:#fff; border:none; border-radius:12px;
+    padding:13px 22px; font-family:'Nunito',sans-serif; font-size:15px; font-weight:800;
+    cursor:pointer; transition:transform .15s,background .2s; white-space:nowrap;
+  }
+  .check-btn:hover { background:var(--orange-dark); transform:translateY(-1px); }
+  .error-msg { color:var(--danger); font-size:13px; font-weight:600; margin-top:10px; display:none; }
+
+  #result { width:100%; max-width:560px; display:none; animation:fadeUp .35s ease; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+  .runner-header {
+    background:linear-gradient(135deg,#1a1a2e 0%,#2d2d4e 100%);
+    border-radius:16px 16px 0 0; padding:22px 26px;
+    display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;
+  }
+  .avatar {
+    width:42px; height:42px; border-radius:50%; background:var(--orange);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Nunito',sans-serif; font-size:18px; font-weight:800; color:#fff; flex-shrink:0;
+  }
+  .runner-info { display:flex; align-items:center; gap:12px; }
+  .runner-name { font-family:'Nunito',sans-serif; font-size:20px; font-weight:800; color:#fff; }
+  .runner-meta { font-size:12px; color:rgba(255,255,255,0.55); margin-top:2px; }
+  .runner-meta span { color:rgba(255,255,255,0.85); font-weight:600; }
+  .total-badge { background:var(--orange); border-radius:12px; padding:10px 18px; text-align:right; }
+  .total-badge .lbl { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.75); }
+  .total-badge .amt { font-family:'Nunito',sans-serif; font-size:28px; font-weight:800; color:#fff; line-height:1.1; }
+
+  .days-bar-wrap {
+    background:var(--white); border-left:1px solid var(--border); border-right:1px solid var(--border); padding:16px 26px;
+  }
+  .days-bar-label { display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:8px; font-weight:500; }
+  .days-bar-track { background:#f0f2f5; border-radius:99px; height:8px; overflow:hidden; }
+  .days-bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,var(--teal),var(--orange)); transition:width .7s ease; }
+
+  .breakdown-grid { background:var(--white); border-left:1px solid var(--border); border-right:1px solid var(--border); }
+  .sec-hdr {
+    padding:10px 26px 7px; font-size:10px; font-weight:700; letter-spacing:2.5px;
+    text-transform:uppercase; color:var(--muted); background:#f8f9fb; border-top:1px solid var(--border);
+  }
+  .b-item {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:14px 26px; border-bottom:1px solid var(--border); transition:background .15s;
+  }
+  .b-item:hover { background:#fafbfc; }
+  .b-left { display:flex; align-items:center; gap:12px; }
+  .b-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0; }
+  .b-name { font-size:14px; font-weight:600; color:var(--text); }
+  .b-sub { font-size:12px; color:var(--muted); margin-top:1px; }
+  .b-val { font-family:'Nunito',sans-serif; font-size:18px; font-weight:800; }
+  .positive { color:var(--teal); }
+  .amber { color:var(--orange-dark); }
+  .negative { color:var(--danger); }
+  .zero { color:#d0d5e0; }
+
+  .total-row { background:var(--orange-light) !important; border-top:2px solid rgba(245,166,35,0.25) !important; border-bottom:none !important; }
+  .total-row .b-name { font-family:'Nunito',sans-serif; font-size:15px; font-weight:800; color:var(--orange-dark); text-transform:uppercase; letter-spacing:0.5px; }
+  .total-row .b-val { font-size:24px; color:var(--orange-dark) !important; }
+
+  .footer-note {
+    border:1px solid var(--border); border-top:none; border-radius:0 0 16px 16px;
+    padding:12px 26px; font-size:12px; color:var(--muted); text-align:center; background:var(--white);
+  }
+  .footer-note.warn { background:var(--danger-light); border-color:rgba(229,62,62,0.2); color:#c53030; }
+
+  .hint { text-align:center; font-size:12px; color:#b0b8c9; margin-top:20px; }
+
+  @media(max-width:480px) {
+    .header { padding:0 16px; }
+    .hero { padding:36px 16px 48px; }
+    .search-card { padding:24px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo-wrap">
+    <svg class="logo-svg" viewBox="0 0 220 72" xmlns="http://www.w3.org/2000/svg">
+      <!-- Orange circle -->
+      <circle cx="36" cy="40" r="30" fill="#F5A623"/>
+      <!-- White ring -->
+      <circle cx="36" cy="40" r="20" fill="white"/>
+      <!-- Inner orange dot -->
+      <circle cx="36" cy="40" r="11" fill="#F5A623"/>
+      <!-- Leaves on top -->
+      <ellipse cx="33" cy="12" rx="4" ry="8" fill="#2BA57A" transform="rotate(-20 33 12)"/>
+      <ellipse cx="40" cy="11" rx="4" ry="8" fill="#2BA57A" transform="rotate(20 40 11)"/>
+      <!-- Orange text -->
+      <text x="74" y="34" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="28" fill="#F5A623">Orange</text>
+      <!-- Health Labs text -->
+      <text x="74" y="62" font-family="Arial,sans-serif" font-weight="700" font-size="22" fill="#2BA57A">Health Labs</text>
+    </svg>
+    <div class="logo-divider"></div>
+    <div>
+      <div class="portal-label">Connectors Portal</div>
+      <div class="portal-sub">Incentive Dashboard</div>
+    </div>
+  </div>
+  <div class="cycle-badge">
+    <span class="dot"></span>
+    April 2025 · 32 connectors
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-tag">🏃 Connector Incentives</div>
+  <h1>Know What You Earned</h1>
+  <p>Enter your Employee ID to see your full incentive breakdown</p>
+</div>
+
+<div class="page-body">
+  <div class="search-card">
+    <label class="search-label" for="empInput">Employee ID</label>
+    <div class="input-row">
+      <input type="text" id="empInput" placeholder="e.g. 2079" maxlength="8" autocomplete="off" />
+      <button class="check-btn" onclick="lookup()">CHECK →</button>
+    </div>
+    <div class="error-msg" id="errorMsg">⚠ No connector found with that EMP ID. Please check and try again.</div>
+  </div>
+
+  <div id="result"></div>
+
+  <p class="hint">April 2025 incentive cycle · Contact your TL for queries · Orange Health Labs</p>
+</div>
+
+<script>
+const data = [
+  {mob:9084122109,id:"2079",name:"Vishal Singh Tomar",loc:"NOA - Ghazidabad + Gaur City",days:8,airport:0,tl:0,kmtrip:47,trips:22,route:3102,b2b:200,pen:0,total:3302},
+  {mob:9548073754,id:"2080",name:"Vivek",loc:"NOA - East Delhi + Indrapuram",days:24,airport:0,tl:0,kmtrip:40,trips:54,route:6480,b2b:600,pen:0,total:7080},
+  {mob:8810453109,id:"2043",name:"Rohit",loc:"NOIDA - Pratap Nagar",days:27,airport:0,tl:0,kmtrip:59,trips:46,route:8142,b2b:0,pen:0,total:8142},
+  {mob:7017865845,id:"2092",name:"Harendra Kumar",loc:"NOIDA - Backup",days:22,airport:0,tl:0,kmtrip:40,trips:62,route:7440,b2b:1060,pen:1000,total:7500},
+  {mob:7557256361,id:"2099",name:"Mohit Kashyap",loc:"NOA - East Delhi + Indrapuram",days:27,airport:240,tl:3000,kmtrip:40,trips:96,route:11520,b2b:0,pen:0,total:14760},
+  {mob:6398537374,id:"2103",name:"Raghav Rathore",loc:"NOA - Back Up",days:21,airport:720,tl:0,kmtrip:40,trips:51,route:6120,b2b:500,pen:500,total:6840},
+  {mob:9990168338,id:"2107",name:"Chaman Singh",loc:"Noida 49+93",days:28,airport:0,tl:0,kmtrip:28,trips:110,route:9240,b2b:0,pen:0,total:9240},
+  {mob:9599630380,id:"2125",name:"Amit Verma",loc:"NOA - Ghazidabad + Gaur City",days:27,airport:0,tl:0,kmtrip:47,trips:68,route:9588,b2b:1200,pen:500,total:10288},
+  {mob:9911405815,id:"2046",name:"Ashish Porwal",loc:"DEL - Paschim Vihar + Vishnu Garden",days:26,airport:0,tl:0,kmtrip:78,trips:37,route:8658,b2b:0,pen:0,total:8658},
+  {mob:9015145423,id:"2072",name:"Sandeep Kumar Sharma",loc:"DEL - Palam (Mayapuri)",days:25,airport:2520,tl:0,kmtrip:56,trips:40,route:6720,b2b:0,pen:500,total:8740},
+  {mob:8887919482,id:"2069",name:"Rajat Kumar",loc:"DEL - Sector 86 + Sector 37 + Sector 49",days:27,airport:0,tl:0,kmtrip:72,trips:100,route:21600,b2b:0,pen:0,total:21600},
+  {mob:8393999268,id:"2135",name:"Gaurav Tyagi",loc:"DEL - Mayapuri",days:28,airport:0,tl:3000,kmtrip:56,trips:55,route:9240,b2b:0,pen:0,total:12240},
+  {mob:9540961058,id:"2077",name:"Sarvan Gaud",loc:"DEL - Paschim Vihar + Vishnu Garden",days:27,airport:0,tl:0,kmtrip:78,trips:51,route:11934,b2b:0,pen:0,total:11934},
+  {mob:9958137219,id:"2076",name:"Jatin",loc:"NOIDA - South Delhi + Sector 12",days:28,airport:0,tl:0,kmtrip:42,trips:110,route:13860,b2b:200,pen:0,total:14060},
+  {mob:8920180168,id:"2665",name:"Sanjeev Kumar",loc:"DEL - Palam (Mayapuri)",days:27,airport:0,tl:0,kmtrip:56,trips:44,route:7392,b2b:0,pen:0,total:7392},
+  {mob:8750270042,id:"2065",name:"Mohd Shoaib",loc:"DEL - Malviya Nagar + Vasant Kunj",days:24,airport:0,tl:0,kmtrip:62,trips:45,route:8370,b2b:100,pen:0,total:8470},
+  {mob:8745972945,id:"3034",name:"Akash Gautam",loc:"NOA - Ghazidabad + Gaur City",days:27,airport:0,tl:0,kmtrip:47,trips:92,route:12972,b2b:600,pen:0,total:13572},
+  {mob:8882738470,id:"3033",name:"Ravi Gautam",loc:"Noida 49+93",days:27,airport:6000,tl:0,kmtrip:28,trips:96,route:8064,b2b:700,pen:0,total:14764},
+  {mob:9990033316,id:"3030",name:"Sonu Kumar Giri",loc:"NOIDA - Pratap Nagar",days:19,airport:240,tl:0,kmtrip:59,trips:27,route:4779,b2b:0,pen:0,total:5019},
+  {mob:8595410933,id:"3079",name:"Vijay Kumar",loc:"DEL - Malviya Nagar + Vasant Kunj",days:22,airport:0,tl:0,kmtrip:62,trips:31,route:5766,b2b:100,pen:0,total:5866},
+  {mob:8826348322,id:"3375",name:"Praveen Kumar",loc:"DEL - Paschim Vihar + Vishnu Garden",days:28,airport:0,tl:0,kmtrip:78,trips:49,route:11466,b2b:0,pen:0,total:11466},
+  {mob:9315765124,id:"3371",name:"Ritesh Kumar",loc:"DEL - Paschim Vihar + Vishnu Garden",days:21,airport:480,tl:0,kmtrip:78,trips:36,route:8424,b2b:0,pen:1000,total:7904},
+  {mob:8377016156,id:"3395",name:"Shivam",loc:"DEL - Malviya Nagar + Vasant Kunj",days:24,airport:0,tl:0,kmtrip:62,trips:40,route:7440,b2b:0,pen:0,total:7440},
+  {mob:9528780033,id:"4019",name:"Nishant",loc:"NOIDA - South Delhi + Sector 12",days:27,airport:240,tl:0,kmtrip:42,trips:89,route:11214,b2b:300,pen:2900,total:8854},
+  {mob:7982002996,id:"4068",name:"Sagar",loc:"GGN Back Up",days:24,airport:720,tl:0,kmtrip:40,trips:36,route:4320,b2b:0,pen:0,total:5040},
+  {mob:8448525969,id:"4124",name:"Diwaker",loc:"DEL - Malviya Nagar + Vasant Kunj",days:27,airport:0,tl:0,kmtrip:62,trips:51,route:9486,b2b:100,pen:0,total:9586},
+  {mob:8930067861,id:"4835",name:"Sameem",loc:"DEL - Old Town + Sector 43",days:28,airport:0,tl:0,kmtrip:42,trips:104,route:13104,b2b:0,pen:500,total:12604},
+  {mob:9813601147,id:"4836",name:"Mustakeem",loc:"DEL - Old Town + Sector 43",days:27,airport:0,tl:0,kmtrip:42,trips:100,route:12600,b2b:200,pen:0,total:12800},
+  {mob:9045636264,id:"4597",name:"Rijavan Khan",loc:"GGN Back Up",days:20,airport:0,tl:0,kmtrip:40,trips:75,route:9000,b2b:692,pen:0,total:9692},
+  {mob:7984863654,id:"4593",name:"Amit Katiyar",loc:"DEL - Sector 86 + Sector 37 + Sector 49",days:25,airport:0,tl:0,kmtrip:72,trips:93,route:20088,b2b:0,pen:0,total:20088},
+  {mob:9315272582,id:"4893",name:"Prince Sharma",loc:"NOIDA - Pratap Nagar",days:26,airport:0,tl:0,kmtrip:59,trips:48,route:8496,b2b:0,pen:0,total:8496},
+  {mob:9050902051,id:"4908",name:"Irshad Ali",loc:"GGN Back Up",days:23,airport:0,tl:0,kmtrip:40,trips:38,route:4560,b2b:0,pen:0,total:4560},
+];
+
+const fmt = n => n > 0 ? '₹' + n.toLocaleString('en-IN') : '—';
+const ini = n => n.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase() || '??';
+
+function lookup() {
+  const val = document.getElementById('empInput').value.trim();
+  const err = document.getElementById('errorMsg');
+  const res = document.getElementById('result');
+  err.style.display='none'; res.style.display='none';
+  const r = data.find(x => x.id === val);
+  if (!r) { err.style.display='block'; return; }
+
+  const pct = Math.min(100, Math.round((r.days / 28) * 100));
+
+  const items = [
+    {icon:'🛵', bg:'#FFF4E0', lbl:'Route Incentive',   sub:`${r.trips} trips · ₹${r.kmtrip}/km`,  val:r.route,   cls:r.route>0?'positive':'zero'},
+    {icon:'✈️', bg:'#EEF6FF', lbl:'Airport Drops',      sub:'Bonus for airport deliveries',         val:r.airport, cls:r.airport>0?'amber':'zero'},
+    {icon:'⭐', bg:'#FFFBEA', lbl:'TL Bonus',           sub:'Team Lead performance bonus',           val:r.tl,      cls:r.tl>0?'amber':'zero'},
+    {icon:'➕', bg:'#E6F7F1', lbl:'B2B Extra Rounds',   sub:'Additional B2B delivery rounds',        val:r.b2b,     cls:r.b2b>0?'positive':'zero'},
+  ];
+
+  let rows = `<div class="sec-hdr">Earnings Breakdown</div>`;
+  rows += items.map(i=>`
+    <div class="b-item">
+      <div class="b-left">
+        <div class="b-icon" style="background:${i.bg}">${i.icon}</div>
+        <div><div class="b-name">${i.lbl}</div><div class="b-sub">${i.sub}</div></div>
+      </div>
+      <div class="b-val ${i.cls}">${i.val>0?fmt(i.val):'—'}</div>
+    </div>`).join('');
+
+  if (r.pen > 0) {
+    rows += `<div class="sec-hdr">Deductions</div>
+    <div class="b-item">
+      <div class="b-left">
+        <div class="b-icon" style="background:#fff5f5">⚠️</div>
+        <div><div class="b-name" style="color:var(--danger)">Penalties</div><div class="b-sub">Applied deductions this cycle</div></div>
+      </div>
+      <div class="b-val negative">− ₹${r.pen.toLocaleString('en-IN')}</div>
+    </div>`;
+  }
+
+  rows += `<div class="b-item total-row">
+    <div class="b-left">
+      <div class="b-icon" style="background:rgba(245,166,35,0.15)">💰</div>
+      <div><div class="b-name">Net Payable</div></div>
+    </div>
+    <div class="b-val">${fmt(r.total)}</div>
+  </div>`;
+
+  const footer = r.pen > 0
+    ? `<div class="footer-note warn">⚠️ A penalty of ₹${r.pen.toLocaleString('en-IN')} was applied this cycle. Contact your TL for details.</div>`
+    : `<div class="footer-note">✅ No penalties this cycle · Keep up the great work!</div>`;
+
+  res.innerHTML = `
+    <div class="runner-header">
+      <div class="runner-info">
+        <div class="avatar">${ini(r.name)}</div>
+        <div>
+          <div class="runner-name">${r.name}</div>
+          <div class="runner-meta">EMP ID: <span>${r.id}</span> &nbsp;·&nbsp; 📍 <span>${r.loc}</span></div>
+        </div>
+      </div>
+      <div class="total-badge"><div class="lbl">Total Earned</div><div class="amt">${fmt(r.total)}</div></div>
+    </div>
+    <div class="days-bar-wrap">
+      <div class="days-bar-label"><span>Days Worked</span><span><strong style="color:var(--text)">${r.days}</strong> / 28 days</span></div>
+      <div class="days-bar-track"><div class="days-bar-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="breakdown-grid">${rows}</div>
+    ${footer}`;
+  res.style.display='block';
+  res.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+document.getElementById('empInput').addEventListener('keydown', e=>{ if(e.key==='Enter') lookup(); });
+</script>
+</body>
+</html>
